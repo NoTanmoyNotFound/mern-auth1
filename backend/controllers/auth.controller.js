@@ -47,6 +47,7 @@ export const signup = async (req, res) => {
 }
 
 export const verifyEmail = async(req,res) => {
+    // 6 9 6 9 6 9 // a verification code
     const {code} = req.body;
     try {
         const user = await User.findOne({
@@ -75,7 +76,8 @@ export const verifyEmail = async(req,res) => {
         })
 
     } catch (error) {
-        
+        console.log("error in verifyEmail", error);
+        res.status(500).json({success: false, message: error.message});
     }
 }
 

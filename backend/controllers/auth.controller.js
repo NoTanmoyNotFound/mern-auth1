@@ -6,6 +6,7 @@ import { User } from "../models/user.model.js";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
 import { sender } from "../mailtrap/mailtrap.config.js";
 import { sendPasswordResetEmail, sendVerificationEmail, sendWelcomeEmail } from "../mailtrap/emails.js";
+import { userInfo } from "os";
 
 
 export const signup = async (req, res) => {
@@ -132,8 +133,9 @@ export const forgotPassword = async (req, res) => {
 
         //Generate reset password token
         const resetToken = crypto.randomBytes(20).toString("hex");
-        const resetPasswordExpireAt = Date.now() + 15 * 60 * 1000; //15 minutes
+        const resetPasswordExpireAt = Date.now() + 24 * 15 * 60 * 1000; //24 hours
 
+        user.resetPasswordToken = resetToken;
         user.verificationTokenExpireAt = resetPasswordExpireAt;
 
         await user.save();
@@ -148,5 +150,37 @@ export const forgotPassword = async (req, res) => {
     } catch (error) {
         console.log("Error in forgotPassword", error);
         res.status(400).json({success: false, message: error.message});
+    }
+}
+
+export const resetPassword = async (req, res) => {
+    try {
+        const {token} = req.params;
+        const {password} = req.body;
+        // console.log("Token from request params:", token);
+
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            // resetPasswordExpireAt: {$gt: Date.now()}
+        });
+        console.log("User found in resetPassword:", user);
+
+        if (!user) {
+            return res.status(400).json({success: false, message: "Invalid token"});
+        }
+
+        //update password
+        const hashedPassword = await bcryptjs.hash(password, 10);
+        user.password = hashedPassword;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpireAt = undefined;
+
+        await user.save();
+        await sendPasswordResetEmail(user.email),
+
+        res.status(200).json({success: true, message: "Password reset successfully"});
+    } catch (error) {
+       console.log("error in resetPassword", error);
+       res.status(400).json({success: false, message: error.message}); 
     }
 }

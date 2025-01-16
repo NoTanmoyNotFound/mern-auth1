@@ -4,9 +4,9 @@ import crypto from "crypto";
 
 import { User } from "../models/user.model.js";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
-import { sender } from "../mailtrap/mailtrap.config.js";
-import { sendPasswordResetEmail, sendVerificationEmail, sendWelcomeEmail } from "../mailtrap/emails.js";
-import { userInfo } from "os";
+
+import { sendPasswordResetEmail, sendPasswordResetSuccessEmail, sendVerificationEmail, sendWelcomeEmail } from "../mailtrap/emails.js";
+
 
 
 export const signup = async (req, res) => {
@@ -176,7 +176,7 @@ export const resetPassword = async (req, res) => {
         user.resetPasswordExpireAt = undefined;
 
         await user.save();
-        await sendPasswordResetEmail(user.email),
+        await sendPasswordResetSuccessEmail(user.email),
 
         res.status(200).json({success: true, message: "Password reset successfully"});
     } catch (error) {

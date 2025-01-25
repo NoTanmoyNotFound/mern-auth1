@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Lock, Mail, User } from "lucide-react";
 import Input from '../components/input';
 import { Link } from 'react-router-dom';
-import PasswordStrengthMeter from '../components/PasswordStrengthMeter.js';
+import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
 
 
 

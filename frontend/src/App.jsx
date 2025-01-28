@@ -7,6 +7,7 @@ import EmailVerificationPage from "./pages/EmailVerificationPage"
 import { Toaster } from "react-hot-toast"
 import { useAuthStore } from "./store/authStore"
 import { useEffect } from "react"
+import DashboardPage from "./pages/DashboardPage"
 
 //protect routes that require authentication
 const protectedRoute =({children}) => {
@@ -49,7 +50,9 @@ function App() {
     
 
     <Routes>
-      <Route path="/" element={"Home"}/>
+      <Route path="/" element={<protectedRoute>
+        <DashboardPage/>
+      </protectedRoute>}/>
       <Route path="/signup" element={
       <RedirectAuthenticatedUser>
         <SignUpPage/>

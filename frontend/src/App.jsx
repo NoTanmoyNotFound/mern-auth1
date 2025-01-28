@@ -8,6 +8,7 @@ import { Toaster } from "react-hot-toast"
 import { useAuthStore } from "./store/authStore"
 import { useEffect } from "react"
 import DashboardPage from "./pages/DashboardPage"
+import LoadingSpinner from "./components/LoadingSpinner"
 
 //protect routes that require authentication
 const protectedRoute =({children}) => {
@@ -29,6 +30,7 @@ const RedirectAuthenticatedUser = ({children}) => {
   if(isAuthenticated && user.isVerified){
     return <Navigate to="/" replace />
   }
+  return children;
 }
 
 
@@ -38,6 +40,8 @@ function App() {
   useEffect(() => {
     checkAuth()
   }, [checkAuth])
+
+  if(isCheckingAuth) return <LoadingSpinner/>
 
   console.log("isauthenticated",isAuthenticated)
   console.log("user",user);
@@ -59,9 +63,12 @@ function App() {
       </RedirectAuthenticatedUser>
       }
       />
-      <Route path="/login" element={<RedirectAuthenticatedUser>
+      <Route path="/login" element={
+        <RedirectAuthenticatedUser>
         <LoginPage/>
-      </RedirectAuthenticatedUser>}/>
+      </RedirectAuthenticatedUser>
+      
+      }/>
       <Route path="/verify-email" element={<EmailVerificationPage/>}/>
     </Routes>
 

@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from "react-router-dom"
+// import { Navigate, Route, Routes } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import FloatingShape from "./components/floatingShape"
 import SignUpPage from "./pages/SignUpPage"
 import LoginPage from "./pages/LoginPage"
